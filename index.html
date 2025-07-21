@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Estrovia Pvt. Ltd.</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+  <style>
+    body {
+      transition: all 0.4s ease-in-out;
+    }
+    .fade-in {
+      animation: fadeIn 1s ease-in;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    #loading-screen {
+      position: fixed;
+      inset: 0;
+      background-color: #000;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      font-weight: bold;
+      font-size: 1.5rem;
+    }
+    .live-bar {
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { background-color: #191a19; }
+      50% { background-color: #0c0c0c; }
+    }
+    /* Toast notification */
+    #toast {
+      position: fixed;
+      bottom: 80px;
+      right: 20px;
+      background-color: #333;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.4);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+      z-index: 99999;
+      font-weight: 600;
+      user-select: none;
+    }
+    #toast.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+  </style>
+  <script>
+    // Loading screen hide after 1s
+    document.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => {
+        document.getElementById('loading-screen').style.display = 'none';
+        document.body.classList.add('fade-in');
+      }, 1000);
+      // Load theme from localStorage or default dark
+      let theme = localStorage.getItem('estrovia-theme') || 'dark';
+      if (theme === 'dark') {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+      updateToggleButton(theme);
+    });
+
+    // Show toast message
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
+    }
+
+    // Toggle dark/light mode and save preference
+    function toggleTheme() {
+      const isDark = document.documentElement.classList.toggle('dark');
+      localStorage.setItem('estrovia-theme', isDark ? 'dark' : 'light');
+      updateToggleButton(isDark ? 'dark' : 'light');
+      showToast(isDark ? 'Dark Mode Activated' : 'Light Mode Activated');
+    }
+    function updateToggleButton(theme) {
+      const btn = document.getElementById('theme-toggle');
+      if(theme === 'dark') {
+        btn.textContent = '☀️ Light Mode';
+      } else {
+        btn.textContent = '🌙 Dark Mode';
+      }
+    }
+
+    // Popup functions (order/support)
+    function openPopup(service) {
+      const popup = document.getElementById('popup');
+      const content = document.getElementById('popup-content');
+      const services = {
+        'seo': 'SEO Optimization for better ranking & search visibility. Price: ৳2000 (Fixed)',
+        'ads': 'Boost campaigns via Facebook/Google to grow your brand. Price: ৳3000 (Fixed)',
+        'boost': 'Targeted engagement boosters for digital presence. Price: ৳1500 (Fixed)'
+      };
+      const fixedPrices = {
+        'seo': 2000,
+        'ads': 3000,
+        'boost': 1500
+      };
+      const orderForm = (price) => `
+        <form id='payment-form' class='mt-4 space-y-3'>
+          <input required id='fullname' type='text' placeholder='Full Name' class='w-full border p-2 rounded text-black' />
+          <input required id='phone' type='text' placeholder='Phone/WhatsApp' class='w-full border p-2 rounded text-black' />
+          <textarea required id='details' placeholder='Package Details' class='w-full border p-2 rounded text-black'></textarea>
+          <input disabled id='price' value='৳${price}' class='w-full border p-2 rounded bg-gray-200 text-gray-700 font-bold' />
+          <select id='method' class='w-full border p-2 rounded text-black' onchange='showPaymentNumber(this.value)'>
+            <option value="">Select Payment Method</option>
+            <option value='bKash'>bKash</option>
+            <option value='Nagad'>Nagad</option>
+          </select>
+          <div id="pay-number" class="text-sm text-yellow-300"></div>
+          <input required id='txid' type='text' placeholder='Transaction ID' class='w-full border p-2 rounded text-black' />
+          <button type='button' onclick='submitPaymentForm(${price})' class='bg-green-600 text-white px-4 py-2 w-full rounded shadow-xl'>Submit Order</button>
+        </form>`;
+      content.innerHTML = `<h2 class='text-xl font-bold mb-2 capitalize'>${service} Service Order</h2><p class='mb-2'>${services[service]}</p>${orderForm(fixedPrices[service])}`;
+      popup.classList.remove('hidden');
+    }
+
+    function showPaymentNumber(method) {
+      const payInfo = {
+        bKash: 'Send payment to: 01814529392 (bKash)',
+        Nagad: 'Send payment to: 01814529392 (Nagad)'
+      };
+      document.getElementById('pay-number').innerText = payInfo[method] || '';
+    }
+
+    function closePopup() {
+      document.getElementById('popup').classList.add('hidden');
+      document.getElementById('support-popup').classList.add('hidden');
+    }
+
+    async function submitPaymentForm(price) {
+      const fullname = document.getElementById('fullname').value;
+      const phone = document.getElementById('phone').value;
+      const details = document.getElementById('details').value;
+      const txid = document.getElementById('txid').value;
+      const method = document.getElementById('method').value;
+      if(!fullname || !phone || !details || !txid || !method) {
+        alert('Please fill all fields!');
+        return;
+      }
+      const orderId = 'EST' + Math.floor(Math.random() * 1000000);
+      const webhookURL = 'https://discord.com/api/webhooks/1396891445587087391/oFefWT8YgWpXU_jx9jTGhF45HddgeJBiYGiOTAm6XYtZ6LKz-FLek4MB7ZTqj5xFBINk'; // Replace with your webhook URL
+
+      try {
+        await fetch(webhookURL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            embeds: [{
+              title: `📦 New Order - #${orderId}`,
+              color: 15844367,
+              fields: [
+                { name: 'Customer Name', value: fullname },
+                { name: 'Phone/WhatsApp', value: phone },
+                { name: 'Package Details', value: details },
+                { name: 'Order Price', value: `৳${price}` },
+                { name: 'Payment Method', value: method },
+                { name: 'Transaction ID', value: txid },
+                { name: 'Order Status', value: '🕒 On Hold - Our Expert Will Contact You Shortly' }
+              ],
+              footer: { text: 'Estrovia Webstore System' },
+              timestamp: new Date().toISOString()
+            }]
+          })
+        });
+        document.getElementById('popup-content').innerHTML = `
+          <div class='text-center p-6'>
+            <h3 class='text-xl mb-3 font-bold text-yellow-400'>✅ Order Placed!</h3>
+            <p>Your Order #${orderId} is <strong>On Hold</strong>. Our expert will contact you shortly.</p>
+            <button onclick='closePopup()' class='mt-4 bg-blue-600 px-4 py-2 rounded shadow-xl'>Close</button>
+          </div>`;
+      } catch(err) {
+        alert('Failed to send order. Please try again later.');
+      }
+    }
+
+    async function submitSupportForm() {
+      const name = document.getElementById('support-name').value;
+      const number = document.getElementById('support-phone').value;
+      const issue = document.getElementById('support-issue').value;
+      if(!name || !number || !issue) {
+        alert('Please fill all support fields!');
+        return;
+      }
+      const webhookURL = 'YOUR_DISCORD_WEBHOOK_URL_HERE'; // Replace with your webhook URL
+      try {
+        await fetch(webhookURL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            embeds: [{
+              title: `🛠️ Support Ticket`,
+              color: 3447003,
+              fields: [
+                { name: 'Customer Name', value: name },
+                { name: 'Phone Number', value: number },
+                { name: 'Issue / Report / Review', value: issue }
+              ],
+              footer: { text: 'Estrovia Live Support' },
+              timestamp: new Date().toISOString()
+            }]
+          })
+        });
+        alert('Support request sent! Thank you for contacting Estrovia.');
+        closePopup();
+      } catch(err) {
+        alert('Failed to send support request. Please try again later.');
+      }
+    }
+
+    function openSupportPopup() {
+      document.getElementById('support-popup').classList.remove('hidden');
+    }
+  </script>
+</head>
+<body class="bg-gradient-to-r from-gray-900 to-black text-white fade-in min-h-screen flex flex-col justify-between">
+  <div>
+    <div id="loading-screen">Loading Estrovia Webstore...</div>
+
+    <!-- 🔴 LIVE UPDATE BAR -->
+    <div class="live-bar bg-blue-600 text-white text-center py-2 text-sm font-semibold shadow-lg">
+      🔔 Promo: 10% off on all services this week!
+    </div>
+
+    <header class="bg-yellow-600 text-white p-5 text-center shadow-lg">
+      <h1 class="text-3xl font-bold">Estrovia Webstore</h1>
+      <p class="text-md">Marketing | SEO | Boost | Exchange</p>
+      <button id="theme-toggle" onclick="toggleTheme()" class="mt-3 bg-gray-900 text-yellow-400 px-4 py-1 rounded shadow hover:bg-gray-800 transition">
+        🌙 Dark Mode
+      </button>
+    </header>
+
+    <main class="p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="bg-gray-800 rounded-xl shadow-2xl p-5 text-center border border-yellow-500">
+        <img src="https://www.seoagetechnology.com/img/services%20banner/seo-banner.png" alt="SEO Service" class="mx-auto mb-3 rounded" />
+        <h2 class="text-xl font-semibold mb-2">SEO Optimization</h2>
+        <p class="text-sm text-gray-300 mb-3">
+          Boost your business with advanced SEO that increases visibility and drives organic traffic.
+        </p>
+        <button onclick="openPopup('seo')" class="bg-yellow-600 text-white px-4 py-2 rounded shadow-xl">Order Now</button>
+      </div>
+      <div class="bg-gray-800 rounded-xl shadow-2xl p-5 text-center border border-yellow-500">
+        <img src="https://i.postimg.cc/9fwNWgvL/Screenshot-2025-07-21-220209.png" alt="Ad Campaign" class="mx-auto mb-3 rounded" />
+        <h2 class="text-xl font-semibold mb-2">Ad Campaign</h2>
+        <p class="text-sm text-gray-300 mb-3">
+          Launch powerful Facebook/Google ads to generate leads, traffic, and brand recognition.
+        </p>
+        <button onclick="openPopup('ads')" class="bg-yellow-600 text-white px-4 py-2 rounded shadow-xl">Order Now</button>
+      </div>
+      <div class="bg-gray-800 rounded-xl shadow-2xl p-5 text-center border border-yellow-500">
+        <img src="https://www.bluehost.com/blog/wp-content/uploads/2025/04/How-to-Increase-User-Engagement-on-Your-Website-1024x559.png" alt="Boost System" class="mx-auto mb-3 rounded" />
+        <h2 class="text-xl font-semibold mb-2">Boost System</h2>
+        <p class="text-sm text-gray-300 mb-3">
+          Grow your digital presence fast with strategic engagement and visibility boosters.
+        </p>
+        <button onclick="openPopup('boost')" class="bg-yellow-600 text-white px-4 py-2 rounded shadow-xl">Order Now</button>
+      </div>
+    </main>
+
+    <!-- Support Form Box -->
+
+
+    <!-- WhatsApp Floating -->
+    <div class="fixed bottom-6 right-6 z-50">
+      <a href="https://wa.me/8801814529392" target="_blank" rel="noopener">
+        <button class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full shadow-xl text-lg">💬 WhatsApp</button>
+      </a>
+    </div>
+
+    <!-- Order/Support Popups -->
+    <div id="popup" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center hidden z-50">
+      <div class="bg-gray-900 text-white rounded-xl p-6 w-full max-w-lg relative shadow-2xl border border-yellow-500">
+        <button class="absolute top-2 right-3 text-gray-400 text-xl font-bold" onclick="closePopup()">&times;</button>
+        <div id="popup-content"></div>
+      </div>
+    </div>
+
+    <!-- Support Popup -->
+    <div id="support-popup" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center hidden z-50">
+      <div class="bg-gray-900 text-white rounded-xl p-6 w-full max-w-lg relative shadow-2xl border border-blue-500">
+        <button class="absolute top-2 right-3 text-gray-400 text-xl font-bold" onclick="closePopup()">&times;</button>
+        <h2 class="text-xl font-bold mb-2">Support Request</h2>
+        <p class="text-sm text-gray-300 mb-4">Our support team will contact you shortly via your phone.</p>
+        <input id="support-name" type="text" placeholder="Your Name" class="w-full border p-2 rounded mb-2 text-black" />
+        <input id="support-phone" type="text" placeholder="Phone Number" class="w-full border p-2 rounded mb-2 text-black" />
+        <textarea id="support-issue" placeholder="What's your issue?" class="w-full border p-2 rounded mb-4 text-black"></textarea>
+        <button onclick="submitSupportForm()" class="bg-blue-600 text-white px-4 py-2 w-full rounded shadow-xl">Submit Request</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+    <footer class="bg-gray-900 text-gray-400 py-6 px-4 text-sm flex flex-col md:flex-row items-center justify-between border-t border-gray-700 shadow-inner">
+      <div class="mb-2 md:mb-0 text-center md:text-left">
+        <p>© 2025 <span class="font-semibold text-white">Estrovia Pvt. Ltd.</span> — Certified Digital Growth Agency</p>
+        <p class="text-xs">
+          All Rights Reserved | 
+          <a href="#" class="text-yellow-400 hover:underline">Privacy Policy</a> | 
+          <a href="#" class="text-yellow-400 hover:underline">Terms of Use</a>
+        </p>
+      </div>
+  </footer>
+
+  <!-- Chat Widget -->
+  <script type="text/javascript">
+    var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
+    (function () {
+      var s1 = document.createElement("script"), s0 = document.getElementsByTagName("script")[0];
+      s1.async = true;
+      s1.src = 'https://embed.tawk.to/65f2b6fd91e5c13bb5b3a46b/1ho7nva3j';
+      s1.charset = 'UTF-8';
+      s1.setAttribute('crossorigin', '*');
+      s0.parentNode.insertBefore(s1, s0);
+    })();
+  </script>
+</body>
+</html>
