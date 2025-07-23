@@ -267,7 +267,7 @@
     
     <!-- Branding -->
     <div class="text-center sm:text-left">
-      <h1 class="text-4xl font-extrabold tracking-tight drop-shadow-sm">✨ Estrovia Social Services</h1>
+      <h1 class="text-4xl font-extrabold tracking-tight drop-shadow-sm"> Estrovia Social Services</h1>
       <p class="text-sm sm:text-base font-medium text-white/90 mt-1 tracking-wide">Marketing • SEO • Boost</p>
     </div>
 
@@ -456,6 +456,351 @@
     </div>
   </div>
 
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estrovia Social Services - Animated Stats</title>
+    <style>
+        /* Basic Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Background Gradient */
+        body {
+            background: linear-gradient(135deg, #00c6ff, #0072ff);
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: white;
+        }
+
+        /* Main Stats Container */
+        .stats-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            font-size: 20px;
+            text-align: center;
+        }
+
+        /* Each Stat Item */
+        .stat {
+            position: relative;
+            display: inline-block;
+            text-transform: uppercase;
+            font-weight: bold;
+            letter-spacing: 1px;
+            padding: 20px 30px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(8px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s ease-in-out, box-shadow 0.3s ease;
+        }
+
+        .stat:hover {
+            transform: scale(1.05) rotate(3deg);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+        }
+
+        .stat span {
+            display: block;
+        }
+
+        /* Count Number Styling with smaller 3D effect */
+        .count {
+            font-size: 40px;
+            font-weight: 700;
+            color: #00f2fe;
+            text-shadow: 0 3px 5px rgba(0, 255, 255, 0.6), 0 6px 15px rgba(0, 255, 255, 0.4);
+            transform: translateZ(0);
+            animation: countAnimation 2s ease-in-out forwards;
+        }
+
+        /* Label Styling */
+        .label {
+            font-size: 16px;
+            color: #f4f4f4;
+            letter-spacing: 1px;
+            margin-top: 8px;
+        }
+
+        /* Animation for count up */
+        @keyframes countAnimation {
+            0% {
+                transform: translateY(-60px) rotateX(40deg);
+                opacity: 0;
+            }
+            50% {
+                transform: translateY(10px) rotateX(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(0) rotateX(0deg);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="stats-container">
+        <div class="stat">
+            <span class="count" id="totalOrders">0</span>
+            <span class="label">Total Orders</span>
+        </div>
+        <div class="stat">
+            <span class="count" id="completedOrders">0</span>
+            <span class="label">Completed Orders</span>
+        </div>
+        <div class="stat">
+            <span class="count" id="cancelledOrders">0</span>
+            <span class="label">Cancelled Orders</span>
+        </div>
+        <div class="stat">
+            <span class="count" id="refundedOrders">0</span>
+            <span class="label">Refunded Orders</span>
+        </div>
+        <div class="stat">
+            <span class="count" id="terminatedOrders">0</span>
+            <span class="label">Terminated Orders</span>
+        </div>
+    </div>
+
+    <script>
+        // Sample data for lifetime order stats
+        let lifetimeOrderStats = {
+            totalOrders: 115,
+            completedOrders: 70,
+            cancelledOrders: 15,
+            refundedOrders: 10,
+            terminatedOrders: 20
+        };
+
+        // Function to animate the numbers with subtle 3D effect
+        function animateCount(id, start, end, duration) {
+            let startTime = null;
+            let element = document.getElementById(id);
+            
+            function countUp(timestamp) {
+                if (!startTime) startTime = timestamp;
+                let progress = timestamp - startTime;
+                let currentCount = Math.min(Math.floor(progress / duration * (end - start) + start), end);
+                element.textContent = currentCount;
+
+                if (progress < duration) {
+                    requestAnimationFrame(countUp);
+                } else {
+                    element.textContent = end; // Ensure final value
+                }
+            }
+            requestAnimationFrame(countUp);
+        }
+
+        // Start the animation for each stat
+        animateCount('totalOrders', 0, lifetimeOrderStats.totalOrders, 2000);
+        animateCount('completedOrders', 0, lifetimeOrderStats.completedOrders, 2000);
+        animateCount('cancelledOrders', 0, lifetimeOrderStats.cancelledOrders, 2000);
+        animateCount('refundedOrders', 0, lifetimeOrderStats.refundedOrders, 2000);
+        animateCount('terminatedOrders', 0, lifetimeOrderStats.terminatedOrders, 2000);
+    </script>
+
+</body>
+
+<!-- Policy Text Section -->
+<div class="policy-text">
+    <p>All services are non-refundable once started or delivered. <a href="#" id="termsLink">Read our Terms & Policy</a> for more info.</p>
+</div>
+
+<!-- The Modal -->
+<div id="termsModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <div class="modal-header">
+            <h2>Terms and Policy</h2>
+        </div>
+        <div class="modal-body">
+            <p><strong>1. Introduction</strong><br>
+            Welcome to Estrovia Social Services. These Terms & Conditions govern your use of our services. Please read carefully.</p>
+
+            <p><strong>2. Non-Refundable Policy</strong><br>
+            Once our services are initiated or delivered, they are non-refundable. Please review all details before committing to any service.</p>
+
+            <p><strong>3. Privacy</strong><br>
+            We value your privacy and ensure that all personal data is securely stored and used only for the purposes outlined in our privacy policy.</p>
+
+            <p><strong>4. Amendments</strong><br>
+            We reserve the right to amend these terms at any time. Any updates will be posted on this page.</p>
+
+            <p>For further details or questions, please reach out to our support team.</p>
+
+            <button class="back-btn" id="backBtn">Back</button>
+        </div>
+    </div>
+</div>
+
+<!-- Add this CSS to your existing CSS styles -->
+<style>
+    /* Policy Text Styling */
+    .policy-text {
+        font-size: 14px;
+        color: #fff;
+        text-align: center;
+        margin-top: 20px;
+        font-weight: 400;
+    }
+
+    .policy-text a {
+        color: #ffd700; /* Gold color */
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+    .policy-text a:hover {
+        text-decoration: underline;
+    }
+
+    /* Modal Styles */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        overflow: auto;
+        padding-top: 60px;
+        animation: fadeIn 1s ease-in-out;
+    }
+
+    /* Fade-In and Fade-Out Animation */
+    @keyframes fadeIn {
+        0% { opacity: 0; }
+        100% { opacity: 1; }
+    }
+
+    .modal-content {
+        background-color: #000;
+        color: #fff;
+        border: 2px solid #ffd700; /* Gold Border */
+        margin: 5% auto;
+        padding: 20px;
+        border-radius: 10px;
+        width: 80%;
+        max-width: 600px;
+        animation: fadeIn 1s ease-in-out;
+    }
+
+    .modal-header {
+        font-size: 20px;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .modal-body {
+        font-size: 16px;
+        line-height: 1.6;
+    }
+
+    /* Close Button Styling */
+    .close {
+        color: #ffd700;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+        position: absolute;
+        top: 10px;
+        right: 20px;
+    }
+
+    .close:hover {
+        color: #fff;
+    }
+
+    .back-btn {
+        background-color: #ffd700; /* Gold color */
+        color: #000;
+        padding: 10px 20px;
+        border: none;
+        font-size: 16px;
+        cursor: pointer;
+        border-radius: 5px;
+        margin-top: 20px;
+        display: inline-block;
+    }
+
+    .back-btn:hover {
+        background-color: #ffcc00; /* Lighter gold */
+    }
+
+    /* Modal fade-out effect */
+    .modal.fade-out {
+        animation: fadeOut 1s ease-out;
+    }
+
+    @keyframes fadeOut {
+        0% { opacity: 1; }
+        100% { opacity: 0; }
+    }
+</style>
+
+<!-- Add this JavaScript to your existing script -->
+<script>
+    // Get modal element
+    var modal = document.getElementById("termsModal");
+
+    // Get the link that opens the modal
+    var termsLink = document.getElementById("termsLink");
+
+    // Get the <span> element that closes the modal
+    var closeBtn = document.getElementsByClassName("close")[0];
+
+    // Get the back button
+    var backBtn = document.getElementById("backBtn");
+
+    // When the user clicks the link, open the modal
+    termsLink.onclick = function() {
+        modal.style.display = "block";
+    }
+
+    // When the user clicks on <span> (x), close the modal
+    closeBtn.onclick = function() {
+        modal.classList.add("fade-out");
+        setTimeout(function() {
+            modal.style.display = "none";
+            modal.classList.remove("fade-out");
+        }, 1000);
+    }
+
+    // When the user clicks the back button, close the modal
+    backBtn.onclick = function() {
+        modal.classList.add("fade-out");
+        setTimeout(function() {
+            modal.style.display = "none";
+            modal.classList.remove("fade-out");
+        }, 1000);
+    }
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.classList.add("fade-out");
+            setTimeout(function() {
+                modal.style.display = "none";
+                modal.classList.remove("fade-out");
+            }, 1000);
+        }
+    }
+</script>
+
+
   <!-- Toast Notification -->
 <!-- Footer -->
 <footer class="glass backdrop-blur-lg bg-white/10 text-white py-8 px-6 text-sm flex flex-col md:flex-row items-center justify-between rounded-t-2xl border-t border-white/20 shadow-2xl mt-16 mx-4">
@@ -529,6 +874,8 @@
     animation: fade-in 0.3s ease-out forwards;
   }
 </style>
+
+
 
 
   <!-- Chat Widget -->
