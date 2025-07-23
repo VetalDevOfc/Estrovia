@@ -457,16 +457,79 @@
   </div>
 
   <!-- Toast Notification -->
-    <footer class="bg-gray-900 text-gray-400 py-6 px-4 text-sm flex flex-col md:flex-row items-center justify-between border-t border-gray-700 shadow-inner">
-      <div class="mb-2 md:mb-0 text-center md:text-left">
-        <p>© 2025 <span class="font-semibold text-white">Estrovia Pvt. Ltd.</span> — Certified Digital Growth Agency</p>
-        <p class="text-xs">
-          All Rights Reserved | 
-          <a href="#" class="text-yellow-400 hover:underline">Privacy Policy</a> | 
-          <a href="#" class="text-yellow-400 hover:underline">Terms of Use</a>
-        </p>
-      </div>
-  </footer>
+<!-- Footer -->
+<footer class="glass backdrop-blur-lg bg-white/10 text-white py-8 px-6 text-sm flex flex-col md:flex-row items-center justify-between rounded-t-2xl border-t border-white/20 shadow-2xl mt-16 mx-4">
+  <div class="text-center md:text-left">
+    <p class="text-base font-semibold text-white">© 2025 Estrovia Pvt. Ltd.</p>
+    <p class="text-xs mt-1 text-gray-200">
+      Certified Digital Growth Agency • All Rights Reserved
+    </p>
+  </div>
+
+  <div class="mt-4 md:mt-0 flex gap-4 text-xs text-yellow-300">
+    <button onclick="toggleModal('policyModal')" class="hover:underline hover:text-yellow-400 transition">Privacy Policy</button>
+    <span>|</span>
+    <button onclick="toggleModal('termsModal')" class="hover:underline hover:text-yellow-400 transition">Terms & No Refund</button>
+  </div>
+</footer>
+
+<!-- Policy Modal -->
+<div id="policyModal" class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 hidden">
+  <div class="glass bg-white text-gray-800 rounded-xl max-w-lg w-full p-6 shadow-2xl animate-fade-in relative">
+    <!-- Close -->
+    <button onclick="toggleModal('policyModal')" class="absolute top-3 right-4 text-gray-600 hover:text-red-500 text-2xl font-bold">&times;</button>
+    <h2 class="text-xl font-bold mb-4 text-yellow-600">Privacy Policy</h2>
+    <p class="text-sm mb-3">
+      We collect only essential data to deliver and improve our services. No personal data is sold or shared.
+    </p>
+    <p class="text-sm mb-6">
+      By using our services, you agree to our privacy practices. Contact us for data removal or more info.
+    </p>
+    <button onclick="toggleModal('policyModal')" class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600 transition">← Back</button>
+  </div>
+</div>
+
+<!-- Terms Modal -->
+<div id="termsModal" class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 hidden">
+  <div class="glass bg-white text-gray-800 rounded-xl max-w-lg w-full p-6 shadow-2xl animate-fade-in relative">
+    <!-- Close -->
+    <button onclick="toggleModal('termsModal')" class="absolute top-3 right-4 text-gray-600 hover:text-red-500 text-2xl font-bold">&times;</button>
+    <h2 class="text-xl font-bold mb-4 text-yellow-600">Terms of Use & No Refund</h2>
+    <p class="text-sm mb-3">
+      By using Estrovia’s services, you agree to follow our usage guidelines. Unauthorized use may lead to termination.
+    </p>
+    <p class="text-sm mb-6 font-semibold text-red-500">
+      🚫 No Refund: All digital product and service purchases are final. We do not offer refunds once the service has started or been delivered.
+    </p>
+    <button onclick="toggleModal('termsModal')" class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600 transition">← Back</button>
+  </div>
+</div>
+
+<!-- Modal Toggle Script -->
+<script>
+  function toggleModal(id) {
+    const modal = document.getElementById(id);
+    modal.classList.toggle('hidden');
+  }
+</script>
+
+<!-- Fade-In Animation -->
+<style>
+  @keyframes fade-in {
+    0% {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  .animate-fade-in {
+    animation: fade-in 0.3s ease-out forwards;
+  }
+</style>
+
 
   <!-- Chat Widget -->
   <script type="text/javascript">
